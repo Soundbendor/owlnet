@@ -1,8 +1,10 @@
+import librosa as LR
 import numpy as np
 import torch
 import torchaudio as TA
 import torchaudio.functional as TAF
 import torchaudio.transforms as TAT
+import matplotlib.pyplot as plt
 import os
 import sys
 
@@ -72,4 +74,12 @@ def resamp_helper(cur_wf:any, cur_sr:int, want_sr:int, want_bits:int = None) -> 
         resamped = resamp_f(cur_wf).to(want_dtype)
     return resamped
 
-
+# https://pytorch.org/audio/stable/tutorials/mvdr_tutorial.html#sphx-glr-tutorials-mvdr-tutorial-py
+def plot_spectrogram(stft, title="Spectrogram"):
+    magnitude = stft.abs()
+    spectrogram = 20 * torch.log10(magnitude + 1e-8).numpy()
+    figure, axis = plt.subplots(1, 1)
+    img = axis.imshow(spectrogram, cmap="viridis", vmin=-100, vmax=0, origin="lower", aspect="auto")
+    axis.set_title(title)
+    plt.colorbar(img, ax=axis)
+    plt.show()
